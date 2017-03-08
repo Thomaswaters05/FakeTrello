@@ -39,6 +39,8 @@ namespace FakeTrello.ReverseModels
         [MaxLength(256)]
         public string UserName { get; set; }
 
+        public ICollection<AspNetRole> Roles { get; set; }
+
 
     }
 }
