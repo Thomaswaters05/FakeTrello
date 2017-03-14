@@ -8,9 +8,8 @@ namespace FakeTrello.DAL
 {
     public class FakeTrelloRepository : IRepository
     {
-
-        public FakeTrelloContext Context { get; set; }
-        //private FakeTrelloContext context; // Data member
+       // private FakeTrelloContext context; //Data Member
+        public FakeTrelloContext Context { get; set; } //Property
 
         public FakeTrelloRepository()
         {
@@ -19,15 +18,14 @@ namespace FakeTrello.DAL
 
         public FakeTrelloRepository(FakeTrelloContext context)
         {
-            Context = context;
+            this.Context = context;
         }
-
 
         public void AddBoard(string name, ApplicationUser owner)
         {
             Board board = new Board { Name = name, Owner = owner };
-            Context.Boards.Add(board);
-            Context.SaveChanges();
+            this.Context.Boards.Add(board);
+            this.Context.SaveChanges();
         }
 
         public void AddCard(string name, int listId, string ownerId)
@@ -62,23 +60,18 @@ namespace FakeTrello.DAL
 
         public Board GetBoard(int boardId)
         {
-            // SELECT * FROM Boards WHERE BoardId == boardId 
-            Board found_board = Context.Boards.FirstOrDefault(b => b.BoardId == boardId); // returns null if nothing is found
-            return found_board;
+            // SELECT * FROM Board WHERE BoardID == boardId
+           Board found_board = Context.Boards.FirstOrDefault(b => b.BoardId == boardId ); //If it does not find a board, return null
+           return found_board;
 
-            /* Using .First() throws an exception if nothing is found
-             * try {
-             * Board found_board = Context.Boards.First(b => b.BoardId == boardId); 
-             * return found_board;
-             * } catch(Exception e) {
-             * return null;
-             * }
-             */
+
+
+           //Context.Boards.First();  //Throws an exception if nothing is found
         }
 
         public List<Board> GetBoardsFromUser(string userId)
         {
-            throw new NotImplementedException();
+            return Context.Boards.Where(b => b.Owner.Id == userId).ToList();
         }
 
         public Card GetCard(int cardId)
@@ -118,7 +111,14 @@ namespace FakeTrello.DAL
 
         public bool RemoveBoard(int boardId)
         {
-            throw new NotImplementedException();
+           Board found_board =  GetBoard(boardId);
+            if (found_board != null)
+            {
+                Context.Boards.Remove(found_board);
+                Context.SaveChanges();
+                return true;
+            }
+            return false;
         }
 
         public bool RemoveCard(int cardId)
