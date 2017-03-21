@@ -17,6 +17,5 @@ namespace FakeTrello.Models
 
         public ApplicationUser Owner { get; set; }
 
-        public List<List> Lists { get; set;}
     }
 }
